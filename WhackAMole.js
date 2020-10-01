@@ -1,16 +1,25 @@
-// Div elements
+// Elements
 const beginningCircle = document.getElementById("beginningCircle");
 const smallCircle = document.getElementById("smallCircle");
 const mediumCircle = document.getElementById("mediumCircle");
 const bigCircle = document.getElementById("bigCircle");
 const gameWindow = document.getElementById("gameWindowDiv");
+const pHits = document.getElementById("pHits");
+const pMisses = document.getElementById("pMisses");
 
 // Window size
 const width = gameWindow.offsetWidth
 const height = gameWindow.offsetHeight
 
-// Variable to control tests
+// Variables for the test
 let testActive = false;
+let misses = 0;
+let hits = 0;
+let currentTestIteration = 0;
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 function resetAllTargets() {
     smallCircle.style.display = "none";
@@ -33,9 +42,33 @@ function calculateCirclePlacement(circleRadius, maxEdge) {
     return placement;
 }
 
-function beginRound() {
+async function startTargetTimer() {
+    
+    console.log("Starting timer with: " + timeout * 10000);
+    await sleep(timeout * 10000);
+    console.log("Timer finished");
+}
+
+function missedTarget() {
+    misses++;
+    pMisses.innerHTML = "Misses: " + misses;
+    resetAllTargets();
+    testActive = false;
+}
+
+function clickTarget() {
+    hits++;
+    timer = 0;
+    pHits.innerHTML = "Hits: " + hits;
+    resetAllTargets();
+    testActive = false;
+}
+
+async function beginRound() {
     if (!testActive) {
         testActive = true;
+        currentTestIteration++;
+        let myTestId = currentTestIteration;
         let ran = getRandomIntInRange(1, 3);
         let xPlacement = 0;
         let yPlacement = 0;
@@ -65,12 +98,13 @@ function beginRound() {
                 bigCircle.style.top = yPlacement + 'px';
                 break;
         }
+        let timeout = Math.round(Math.random() * 3 + 2);
+        timer = timeout;
+        await sleep(timeout * 1000);
+        if(myTestId == currentTestIteration) {
+            missedTarget();
+        }
     }
-}
-
-function clickTarget() {
-    resetAllTargets();
-    testActive = false;
 }
 
 function initGame() {
