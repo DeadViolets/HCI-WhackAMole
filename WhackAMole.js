@@ -101,7 +101,7 @@ async function beginRound() {
         let timeout = Math.round(Math.random() * 3 + 2);
         timer = timeout;
         await sleep(timeout * 1000);
-        if(myTestId == currentTestIteration) {
+        if(myTestId == currentTestIteration && testActive) {
             missedTarget();
         }
     }
