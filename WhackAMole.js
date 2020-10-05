@@ -15,7 +15,8 @@ const height = gameWindow.offsetHeight
 let testActive = false;
 let misses = 0;
 let hits = 0;
-let currentTestIteration = 0;
+//let currentTestIteration = 0;
+var timeoutTracker;
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -42,12 +43,11 @@ function calculateCirclePlacement(circleRadius, maxEdge) {
     return placement;
 }
 
-async function startTargetTimer() {
-    
+/*async function startTargetTimer() {
     console.log("Starting timer with: " + timeout * 10000);
     await sleep(timeout * 10000);
     console.log("Timer finished");
-}
+}*/
 
 function missedTarget() {
     misses++;
@@ -57,14 +57,14 @@ function missedTarget() {
 }
 
 function clickTarget() {
+    clearTimeout(missedTarget);
     hits++;
-    timer = 0;
     pHits.innerHTML = "Hits: " + hits;
     resetAllTargets();
     testActive = false;
 }
 
-async function beginRound() {
+function beginRound() {
     if (!testActive) {
         testActive = true;
         currentTestIteration++;
@@ -99,11 +99,13 @@ async function beginRound() {
                 break;
         }
         let timeout = Math.round(Math.random() * 3 + 2);
-        timer = timeout;
+        timeoutTracker = setTimeout(missedTarget, timeout);
+
+        /*
         await sleep(timeout * 1000);
         if(myTestId == currentTestIteration && testActive) {
             missedTarget();
-        }
+        }*/
     }
 }
 
