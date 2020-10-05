@@ -15,7 +15,6 @@ const height = gameWindow.offsetHeight
 let testActive = false;
 let misses = 0;
 let hits = 0;
-//let currentTestIteration = 0;
 var timeoutTracker;
 
 function sleep(ms) {
@@ -43,12 +42,6 @@ function calculateCirclePlacement(circleRadius, maxEdge) {
     return placement;
 }
 
-/*async function startTargetTimer() {
-    console.log("Starting timer with: " + timeout * 10000);
-    await sleep(timeout * 10000);
-    console.log("Timer finished");
-}*/
-
 function missedTarget() {
     misses++;
     pMisses.innerHTML = "Misses: " + misses;
@@ -57,22 +50,22 @@ function missedTarget() {
 }
 
 function clickTarget() {
-    clearTimeout(missedTarget);
+    clearTimeout(timeoutTracker);
     hits++;
     pHits.innerHTML = "Hits: " + hits;
     resetAllTargets();
     testActive = false;
 }
 
-function beginRound() {
+async function beginRound() {
     if (!testActive) {
         testActive = true;
-        currentTestIteration++;
-        let myTestId = currentTestIteration;
-        let ran = getRandomIntInRange(1, 3);
+        let randomCircle = getRandomIntInRange(1, 3);
+        let randomTimeToAppear = Math.round((Math.random() + 1) * 1000);
+        await sleep(randomTimeToAppear);
         let xPlacement = 0;
         let yPlacement = 0;
-        switch (ran) {
+        switch (randomCircle) {
             case 1:
                 smallCircle.style.display = "initial";
                 smallCircle.style.position = "absolute";
@@ -99,13 +92,7 @@ function beginRound() {
                 break;
         }
         let timeout = Math.round(Math.random() * 3 + 2);
-        timeoutTracker = setTimeout(missedTarget, timeout);
-
-        /*
-        await sleep(timeout * 1000);
-        if(myTestId == currentTestIteration && testActive) {
-            missedTarget();
-        }*/
+        timeoutTracker = setTimeout(missedTarget, timeout * 1000);
     }
 }
 
