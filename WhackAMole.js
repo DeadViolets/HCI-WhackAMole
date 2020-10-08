@@ -10,9 +10,9 @@ const pMisses = document.getElementById("pMisses");
 // Other constants
 const width = gameWindow.offsetWidth
 const height = gameWindow.offsetHeight
-const idSmall = 4.632;
-const idMedium = 5.621;
-const idBig = 3.293;
+const idSmall = Math.log2((calcDistanceTo(750 + 5, 384) / smallCircle.offsetWidth) + 1);
+const idMedium = Math.log2((calcDistanceTo(994 + 15, 384) / mediumCircle.offsetWidth) + 1);
+const idBig = Math.log2((calcDistanceTo(600 + 25, 384) / bigCircle.offsetWidth) + 1);
 
 // Variables for the test
 let testActive = false;
@@ -111,23 +111,23 @@ function beginCalibrationRound() {
 
 function calculateAndInterpretCalibrationResults() {
     let tpSum = 0;
-    for(var i = 0; i < results.length; i++) {
+    for(var i = 0; i < calibrationResults.length; i++) {
         let mod = (i + 1) % 3;
         if(mod == 1) {
-            tpSum += idBig / results[i];
+            tpSum += idBig / calibrationResults[i];
         } else if (mod == 2) {
-            tpSum += idMedium / result[i];
+            tpSum += idMedium / calibrationResults[i];
         } else {
-            tpSum += idSmall / result[i];
+            tpSum += idSmall / calibrationResults[i];
         }
     }
-    tpMean = tpSum / results.length;
+    tpMean = tpSum / calibrationResults.length;
 }
 
 function calcDistanceTo(x, y) {
     let xx = x - (beginningCircle.offsetLeft + (beginningCircle.offsetWidth / 2));
     let yy = y - (beginningCircle.offsetTop + (beginningCircle.offsetWidth / 2));
-    Math.sqrt((xx * xx) + (yy * yy));
+    return Math.sqrt((xx * xx) + (yy * yy));
 }
 
 async function beginRound() {
@@ -141,6 +141,7 @@ async function beginRound() {
                     pHits.innerHTML = "Hits: " + hits;
                     calibrationActive = false;
                     calculateAndInterpretCalibrationResults();
+                    resetAllTargets();
                     return;
                 }
             }
@@ -186,7 +187,7 @@ async function beginRound() {
         }
         //let timeout = Math.round(Math.random() * 3 + 2);
         let timeout = tmpId / tpMean;
-        timeoutTracker = setTimeout(missedTarget, timeout * 1000);
+        timeoutTracker = setTimeout(missedTarget, Math.round(timeout));
     }
 }
 
