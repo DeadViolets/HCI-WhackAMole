@@ -7,9 +7,12 @@ const gameWindow = document.getElementById("gameWindowDiv");
 const pHits = document.getElementById("pHits");
 const pMisses = document.getElementById("pMisses");
 
-// Window size
+// Other constants
 const width = gameWindow.offsetWidth
 const height = gameWindow.offsetHeight
+const idSmall = 4.632;
+const idMedium = 5.621;
+const idBig = 3.293;
 
 // Variables for the test
 let testActive = false;
@@ -20,6 +23,9 @@ let calibrationCount = 3 + 1; // One more than you want to do :)
 let calibrationResults = [];
 let misses = 0;
 let hits = 0;
+let aConstant = 0.2;
+let bConstant = 0;
+let tpMean = 0;
 var timeoutTracker;
 var calibrationTimerStart;
 var calibrationTimerEnd;
@@ -92,7 +98,7 @@ function initCalibrationTargets() {
         case 3:
             smallCircle.style.display = "initial";
             smallCircle.style.position = "absolute";
-            smallCircle.style.left = "700px";
+            smallCircle.style.left = "750px";
             smallCircle.style.top = "379px";
             break;
     }
@@ -101,6 +107,27 @@ function initCalibrationTargets() {
 function beginCalibrationRound() {
     calibrationTimerStart = Date.now();
     initCalibrationTargets();
+}
+
+function calculateAndInterpretCalibrationResults() {
+    let tpSum = 0;
+    for(var i = 0; i < results.length; i++) {
+        let mod = (i + 1) % 3;
+        if(mod == 1) {
+            tpSum += idBig / results[i];
+        } else if (mod == 2) {
+            tpSum += idMedium / result[i];
+        } else {
+            tpSum += idSmall / result[i];
+        }
+    }
+    tpMean = tpSum / results.length;
+}
+
+function calcDistanceTo(x, y) {
+    let xx = x - (beginningCircle.offsetLeft + (beginningCircle.offsetWidth / 2));
+    let yy = y - (beginningCircle.offsetTop + (beginningCircle.offsetWidth / 2));
+    Math.sqrt((xx * xx) + (yy * yy));
 }
 
 async function beginRound() {
@@ -113,6 +140,7 @@ async function beginRound() {
                     hits = 0;
                     pHits.innerHTML = "Hits: " + hits;
                     calibrationActive = false;
+                    calculateAndInterpretCalibrationResults();
                     return;
                 }
             }
@@ -121,6 +149,7 @@ async function beginRound() {
     }
     else if (!testActive) {
         testActive = true;
+        let tmpId = 0;
         let randomCircle = getRandomIntInRange(1, 3);
         let randomTimeToAppear = Math.round((Math.random() + 1) * 1000);
         await sleep(randomTimeToAppear);
@@ -134,6 +163,7 @@ async function beginRound() {
                 yPlacement = calculateCirclePlacement(smallCircle.offsetWidth / 2, height);
                 smallCircle.style.left = xPlacement + 'px';
                 smallCircle.style.top = yPlacement + 'px';
+                tmpId = Math.log2((calcDistanceTo(xPlacement, yPlacement) / smallCircle.offsetWidth) + 1);
                 break;
             case 2:
                 mediumCircle.style.display = "initial";
@@ -142,6 +172,7 @@ async function beginRound() {
                 yPlacement = calculateCirclePlacement(mediumCircle.offsetWidth / 2, height);
                 mediumCircle.style.left = xPlacement + 'px';
                 mediumCircle.style.top = yPlacement + 'px';
+                tmpId = Math.log2((calcDistanceTo(xPlacement, yPlacement) / mediumCircle.offsetWidth) + 1);
                 break;
             case 3:
                 bigCircle.style.display = "initial";
@@ -150,9 +181,11 @@ async function beginRound() {
                 yPlacement = calculateCirclePlacement(bigCircle.offsetWidth / 2, height);
                 bigCircle.style.left = xPlacement + 'px';
                 bigCircle.style.top = yPlacement + 'px';
+                tmpId = Math.log2((calcDistanceTo(xPlacement, yPlacement) / bigCircle.offsetWidth) + 1);
                 break;
         }
-        let timeout = Math.round(Math.random() * 3 + 2);
+        //let timeout = Math.round(Math.random() * 3 + 2);
+        let timeout = tmpId / tpMean;
         timeoutTracker = setTimeout(missedTarget, timeout * 1000);
     }
 }
