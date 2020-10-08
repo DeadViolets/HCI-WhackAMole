@@ -35,9 +35,10 @@ function getRandomIntInRange(min, max) {
 }
 
 function calculateCirclePlacement(circleRadius, maxEdge) {
-    let placement = getRandomIntInRange(circleRadius, maxEdge - ((circleRadius * 3) + beginningCircle.offsetWidth));
-    if ((placement + circleRadius) > ((maxEdge / 2) + (beginningCircle.offsetWidth / 2) + circleRadius)) {
-        placement += (beginningCircle.offsetWidth + (2 * circleRadius));
+    let circleDiameter = circleRadius * 2;
+    let placement = getRandomIntInRange(0, (maxEdge - (2 * circleDiameter)) - beginningCircle.offsetWidth);
+    if ((placement + circleDiameter) > ((maxEdge / 2) - (beginningCircle.offsetWidth / 2)) - circleDiameter) { // Overlap beginningCircle
+        placement += (beginningCircle.offsetWidth + circleDiameter); // Fix overlap
     }
     return placement;
 }
