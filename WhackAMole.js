@@ -13,9 +13,16 @@ const height = gameWindow.offsetHeight
 
 // Variables for the test
 let testActive = false;
+let calibrationActive = true;
+let calibrationTestActive = false;
+let calibrationTargetCount = 1;
+let calibrationCount = 3;
+let calibrationResults = [];
 let misses = 0;
 let hits = 0;
 var timeoutTracker;
+var calibrationTimerStart;
+var calibrationTimerEnd;
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -56,10 +63,47 @@ function clickTarget() {
     pHits.innerHTML = "Hits: " + hits;
     resetAllTargets();
     testActive = false;
+    if(calibrationActive) {
+        calibrationTimerEnd = Date.now();
+        let result = calibrationTimerEnd - calibrationTimerStart;
+        calibrationResults.push(result);
+    }
+}
+
+function initCalibrationTargets() {
+    switch(calibrationTargetCount) {
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+    }
+}
+
+function beginCalibrationRound() {
+    calibrationTimerStart = Date.now();
+    initCalibrationTargets();
 }
 
 async function beginRound() {
-    if (!testActive) {
+    if (calibrationActive) {
+        if(!calibrationTestActive) {
+            calibrationTestActive = true;
+            if(calibrationTargetCount == 1) {
+                calibrationCount--;
+                if(calibrationCount == 0) {
+                    hits = 0;
+                    pHits.innerHTML = "Hits: " + hits;
+                    calibrationActive = false;
+                }
+                else {
+                    beginCalibrationRound()
+                }
+            }
+        }
+    }
+    else if (!testActive) {
         testActive = true;
         let randomCircle = getRandomIntInRange(1, 3);
         let randomTimeToAppear = Math.round((Math.random() + 1) * 1000);
