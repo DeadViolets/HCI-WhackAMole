@@ -16,7 +16,7 @@ let testActive = false;
 let calibrationActive = true;
 let calibrationTestActive = false;
 let calibrationTargetCount = 1;
-let calibrationCount = 3;
+let calibrationCount = 3 + 1; // One more than you want to do :)
 let calibrationResults = [];
 let misses = 0;
 let hits = 0;
@@ -67,16 +67,33 @@ function clickTarget() {
         calibrationTimerEnd = Date.now();
         let result = calibrationTimerEnd - calibrationTimerStart;
         calibrationResults.push(result);
+        calibrationTestActive = false;
+        calibrationTargetCount++;
+        if(calibrationTargetCount == 4) {
+            calibrationTargetCount = 1;
+        }
     }
 }
 
 function initCalibrationTargets() {
     switch(calibrationTargetCount) {
         case 1:
+            bigCircle.style.display = "initial";
+            bigCircle.style.position = "absolute";
+            bigCircle.style.left = "600px";
+            bigCircle.style.top = "359px";
             break;
         case 2:
+            mediumCircle.style.display = "initial";
+            mediumCircle.style.position = "absolute";
+            mediumCircle.style.left = "994px";
+            mediumCircle.style.top = "369px";
             break;
         case 3:
+            smallCircle.style.display = "initial";
+            smallCircle.style.position = "absolute";
+            smallCircle.style.left = "700px";
+            smallCircle.style.top = "379px";
             break;
     }
 }
@@ -96,11 +113,10 @@ async function beginRound() {
                     hits = 0;
                     pHits.innerHTML = "Hits: " + hits;
                     calibrationActive = false;
-                }
-                else {
-                    beginCalibrationRound()
+                    return;
                 }
             }
+            beginCalibrationRound();
         }
     }
     else if (!testActive) {
