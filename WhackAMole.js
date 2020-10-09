@@ -8,6 +8,8 @@ const pHits = document.getElementById("pHits");
 const pMisses = document.getElementById("pMisses");
 const pTpMean = document.getElementById("pTpMean");
 const pCalibrationResults = document.getElementById("pCalibrationResults");
+const header1 = document.getElementById("header1");
+const pExplain = document.getElementById("pExplain");
 
 const calibrationSmallX = 700;
 const calibrationSmallY = 600;
@@ -161,6 +163,8 @@ async function beginRound() {
                     calculateAndInterpretCalibrationResults();
                     resetAllTargets();
                     printCalibrationResults();
+                    header1.innerHTML = "Whack-A-Mole"
+                    pExplain.innerHTML = "Real game begins now. Play until hits + misses = 60, then screenshot all the results :)"
                     return;
                 }
             }
