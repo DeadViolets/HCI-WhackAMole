@@ -7,12 +7,19 @@ const gameWindow = document.getElementById("gameWindowDiv");
 const pHits = document.getElementById("pHits");
 const pMisses = document.getElementById("pMisses");
 
+const calibrationSmallX = 700;
+const calibrationSmallY = 600;
+const calibrationMediumX = 5;
+const calibrationMediumY = 100;
+const calibrationBigX = 700;
+const calibrationBigY = 250;
+
 // Other constants
 const width = gameWindow.offsetWidth
 const height = gameWindow.offsetHeight
-const idSmall = Math.log2((calcDistanceTo(750 + 5, 384) / smallCircle.offsetWidth) + 1);
-const idMedium = Math.log2((calcDistanceTo(994 + 15, 384) / mediumCircle.offsetWidth) + 1);
-const idBig = Math.log2((calcDistanceTo(600 + 25, 384) / bigCircle.offsetWidth) + 1);
+const idSmall = Math.log2((calcDistanceTo(calibrationSmallX + smallCircle.offsetWidth / 2, calibrationSmallY + smallCircle.offsetWidth / 2) / smallCircle.offsetWidth) + 1);
+const idMedium = Math.log2((calcDistanceTo(calibrationMediumX + mediumCircle.offsetWidth / 2, calibrationMediumY + mediumCircle.offsetWidth / 2) / mediumCircle.offsetWidth) + 1);
+const idBig = Math.log2((calcDistanceTo(calibrationBigX + bigCircle.offsetWidth / 2, calibrationBigY + bigCircle.offsetWidth / 2) / bigCircle.offsetWidth) + 1);
 
 // Variables for the test
 let testActive = false;
@@ -86,20 +93,20 @@ function initCalibrationTargets() {
         case 1:
             bigCircle.style.display = "initial";
             bigCircle.style.position = "absolute";
-            bigCircle.style.left = "600px";
-            bigCircle.style.top = "359px";
+            bigCircle.style.left = calibrationBigX + 'px';
+            bigCircle.style.top = calibrationBigY + 'px';
             break;
         case 2:
             mediumCircle.style.display = "initial";
             mediumCircle.style.position = "absolute";
-            mediumCircle.style.left = "994px";
-            mediumCircle.style.top = "369px";
+            mediumCircle.style.left = calibrationMediumX + 'px';
+            mediumCircle.style.top = calibrationMediumY + 'px';
             break;
         case 3:
             smallCircle.style.display = "initial";
             smallCircle.style.position = "absolute";
-            smallCircle.style.left = "750px";
-            smallCircle.style.top = "379px";
+            smallCircle.style.left = calibrationSmallX + 'px';
+            smallCircle.style.top = calibrationSmallY + 'px';
             break;
     }
 }
