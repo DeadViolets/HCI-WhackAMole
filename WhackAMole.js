@@ -6,6 +6,8 @@ const bigCircle = document.getElementById("bigCircle");
 const gameWindow = document.getElementById("gameWindowDiv");
 const pHits = document.getElementById("pHits");
 const pMisses = document.getElementById("pMisses");
+const pTpMean = document.getElementById("pTpMean");
+const pCalibrationResults = document.getElementById("pCalibrationResults");
 
 const calibrationSmallX = 700;
 const calibrationSmallY = 600;
@@ -137,6 +139,15 @@ function calcDistanceTo(x, y) {
     return Math.sqrt((xx * xx) + (yy * yy));
 }
 
+function printCalibrationResults() {
+    pTpMean.innerHTML = "tpMean: " + tpMean;
+    let calresults = "";
+    for(var i = 0; i < calibrationResults.length; i++) {
+        calresults = calresults + calibrationResults[i] + ", ";
+    }
+    pCalibrationResults.innerHTML = "cal results: " + calresults;
+}
+
 async function beginRound() {
     if (calibrationActive) {
         if(!calibrationTestActive) {
@@ -149,6 +160,7 @@ async function beginRound() {
                     calibrationActive = false;
                     calculateAndInterpretCalibrationResults();
                     resetAllTargets();
+                    printCalibrationResults();
                     return;
                 }
             }
